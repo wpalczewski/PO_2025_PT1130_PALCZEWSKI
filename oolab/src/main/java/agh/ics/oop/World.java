@@ -1,53 +1,26 @@
 package agh.ics.oop;
 
-
-
-
-
+import agh.ics.oop.model.MoveDirection;
 
 public class World {
-    public static void main(String[] args) {
-        System.out.println("System wystartował");
 
+    public static void main(String[] args) {
+        System.out.println("system wystartował");
 
         MoveDirection[] directions = OptionsParser.parse(args);
-        for (int index = 0; index < args.length; index++) {
-            System.out.print(args[index]);
-            if (index != args.length - 1) {
-                System.out.println(",");
+        run(directions);
+
+        System.out.println("system zakończył działanie");
+    }
+
+    public static void run(MoveDirection[] directions) {
+        for (MoveDirection direction : directions) {
+            switch (direction) {
+                case FORWARD -> System.out.println("Zwierzak idzie do przodu");
+                case BACKWARD -> System.out.println("Zwierzak idzie do tyłu");
+                case RIGHT -> System.out.println("Zwierzak skręca w prawo");
+                case LEFT -> System.out.println("Zwierzak skręca w lewo");
             }
         }
-        System.out.println("");
-        System.out.println("System zakończył działanie");
-
-
     }
-    public static void run(String[] args){
-        String message = switch (arg){
-            case "f" -> ("zwierzak idzie do przodu");
-            case "b" -> ("zwierzak idzie do tyłu");
-            case "r" -> ("zwierzak skręca w prawo");
-            case "l" -> ("zwierzak skręca w lewo");
-            default -> ("Nieznana komenda");
-        };
-        System.out.println(message);
-
-
-
-
-    }
-
-
-
-
-    public enum MoveDirection {
-        FORWARD,
-        BACKWARD,
-        RIGHT,
-        LEFT
-    }
-
-
-
-
 }
