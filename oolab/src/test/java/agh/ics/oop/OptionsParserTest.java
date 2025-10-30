@@ -2,6 +2,7 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.MoveDirection;
 import org.junit.jupiter.api.Test;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OptionsParserTest {
@@ -12,16 +13,16 @@ class OptionsParserTest {
         String[] args = {"f", "b", "l", "r"};
 
         // When
-        MoveDirection[] result = OptionsParser.parse(args);
+        List<MoveDirection> result = OptionsParser.parse(args);
 
         // Then
-        MoveDirection[] expected = {
+        List<MoveDirection> expected = List.of(
                 MoveDirection.FORWARD,
                 MoveDirection.BACKWARD,
                 MoveDirection.LEFT,
                 MoveDirection.RIGHT
-        };
-        assertArrayEquals(expected, result);
+        );
+        assertEquals(expected, result);
     }
 
     @Test
@@ -30,40 +31,43 @@ class OptionsParserTest {
         String[] args = {"f", "x", "l", "y", "r"};
 
         // When
-        MoveDirection[] result = OptionsParser.parse(args);
+        List<MoveDirection> result = OptionsParser.parse(args);
 
         // Then
-        MoveDirection[] expected = {
+        List<MoveDirection> expected = List.of(
                 MoveDirection.FORWARD,
                 MoveDirection.LEFT,
                 MoveDirection.RIGHT
-        };
-        assertArrayEquals(expected, result);
+        );
+
+        assertEquals(3, result.size());
+        assertEquals(expected, result);
     }
 
     @Test
-    void parseShouldReturnEmptyArrayForNoValidInput() {
+    void parseShouldReturnEmptyListForNoValidInput() {
         // Given
         String[] args = {"a", "bcd", "z"};
 
         // When
-        MoveDirection[] result = OptionsParser.parse(args);
+        List<MoveDirection> result = OptionsParser.parse(args);
 
         // Then
-        assertEquals(0, result.length);
-        assertArrayEquals(new MoveDirection[0], result);
+        assertTrue(result.isEmpty(),);
+        assertEquals(0, result.size());
     }
 
     @Test
-    void parseShouldReturnEmptyArrayForEmptyInput() {
+    void parseShouldReturnEmptyListForEmptyInput() {
         // Given
         String[] args = {};
 
         // When
-        MoveDirection[] result = OptionsParser.parse(args);
+        List<MoveDirection> result = OptionsParser.parse(args);
 
         // Then
-        assertEquals(0, result.length);
-        assertArrayEquals(new MoveDirection[0], result);
+
+        assertTrue(result.isEmpty());
+        assertEquals(0, result.size());
     }
 }

@@ -15,6 +15,9 @@ class Vector2dTest {
         // When & Then
         assertEquals(v1, v2);
         assertNotEquals(v1, v3);
+        assertNotEquals(v1, null);
+        assertNotEquals(v1, "string");
+        assertEquals(v1, v1);
     }
 
     @Test
@@ -30,30 +33,54 @@ class Vector2dTest {
     }
 
     @Test
-    void precedesAndFollowsShouldReturnCorrectBoolean() {
+    void precedesShouldReturnCorrectBoolean() {
         // Given
         Vector2d v1 = new Vector2d(1, 2);
         Vector2d v2 = new Vector2d(2, 3);
+        Vector2d v3 = new Vector2d(1, 3);
 
         // When & Then
         assertTrue(v1.precedes(v2));
+        assertTrue(v1.precedes(v3));
         assertFalse(v2.precedes(v1));
-        assertTrue(v2.follows(v1));
-        assertFalse(v1.follows(v2));
     }
 
     @Test
-    void upperRightAndLowerLeftShouldReturnCorrectVectors() {
+    void followsShouldReturnCorrectBoolean() {
+        // Given
+        Vector2d v1 = new Vector2d(1, 2);
+        Vector2d v2 = new Vector2d(2, 3);
+        Vector2d v3 = new Vector2d(1, 3);
+
+        // When & Then
+        assertTrue(v2.follows(v1));
+        assertFalse(v1.follows(v2));
+        assertFalse(v1.follows(v3));
+    }
+
+    @Test
+    void upperRightShouldReturnCorrectVector() {
         // Given
         Vector2d v1 = new Vector2d(1, 5);
         Vector2d v2 = new Vector2d(3, 2);
 
         // When
         Vector2d upperRight = v1.upperRight(v2);
-        Vector2d lowerLeft = v1.lowerLeft(v2);
 
         // Then
         assertEquals(new Vector2d(3, 5), upperRight);
+    }
+
+    @Test
+    void lowerLeftShouldReturnCorrectVector() {
+        // Given
+        Vector2d v1 = new Vector2d(1, 5);
+        Vector2d v2 = new Vector2d(3, 2);
+
+        // When
+        Vector2d lowerLeft = v1.lowerLeft(v2);
+
+        // Then
         assertEquals(new Vector2d(1, 2), lowerLeft);
     }
 
