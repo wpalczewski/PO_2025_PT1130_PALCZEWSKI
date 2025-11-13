@@ -1,82 +1,103 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.MapDirection;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.*;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SimulationTest {
 
-    private List<Animal> runSimulation(String[] args, List<Vector2d> initialPositions) {
+    @Test
+    void testSimpleRotation() {
         // Given
-        List<MoveDirection> directions = OptionsParser.parse(args);
-        Simulation simulation = new Simulation(initialPositions, directions);
+        WorldMap map = new RectangularMap(5, 5);
+        List<Vector2d> positions = List.of(new Vector2d(2, 2));
+        List<MoveDirection> moves = OptionsParser.parse(new String[]{"r", "r", "l"});
+        Simulation simulation = new Simulation(map, positions, moves);
 
         // When
         simulation.run();
 
-        return simulation.getAnimals();
+        // Then
+        Animal animal = (Animal) map.objectAt(new Vector2d(2, 2));
+        assertNotNull(animal);
+        assertEquals(MapDirection.EAST, animal.getOrientation());
+        assertEquals(new Vector2d(2, 2), animal.getPosition());
     }
 
     @Test
-    void shouldAnimalsEndUpOnCorrectFinalPositionsAndOrientations() {
+    void testSimpleForwardMovement() {
         // Given
-        String[] moves = {"f", "b", "r", "l", "f", "f", "r", "r", "f", "f", "f", "f", "f", "f", "f", "f"};
-        List<Vector2d> initialPositions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
+        WorldMap map = new RectangularMap(5, 5);
+        List<Vector2d> positions = List.of(new Vector2d(2, 2));
+        List<MoveDirection> moves = OptionsParser.parse(new String[]{"f", "f"});
+        Simulation simulation = new Simulation(map, positions, moves);
 
         // When
-        List<Animal> animals = runSimulation(moves, initialPositions);
+        simulation.run();
 
         // Then
-        assertEquals(new Vector2d(1, 2), animals.get(0).getPosition());
-        assertEquals(MapDirection.WEST, animals.get(0).getOrientation());
-
-        assertEquals(new Vector2d(4, 4), animals.get(1).getPosition());
-        assertEquals(MapDirection.EAST, animals.get(1).getOrientation());
+        assertNull(map.objectAt(new Vector2d(2, 2)));
+        Animal animal = (Animal) map.objectAt(new Vector2d(2, 4));
+        assertNotNull(animal);
+        assertEquals(MapDirection.NORTH, animal.getOrientation());
     }
 
     @Test
-    void shouldBlockForwardMovementAtMapBoundary() {
+    void testMovementIsBlockedByBoundary() {
         // Given
-        List<Vector2d> initialPositions = List.of(new Vector2d(4, 4), new Vector2d(0, 3));
-        String[] moves = {"f", "f", "f", "f"};
+        WorldMap map = new RectangularMap(5, 5);
+        List<Vector2d> positions = List.of(new Vector2d(2, 4)); // Zaczyna przy górnej krawędzi
+        List<MoveDirection> moves = OptionsParser.parse(new String[]{"f", "f", "f"});
+        Simulation simulation = new Simulation(map, positions, moves);
 
         // When
-        List<Animal> animals = runSimulation(moves, initialPositions);
+        simulation.run();
 
         // Then
-        assertEquals(new Vector2d(4, 4), animals.get(0).getPosition());
-        assertEquals(new Vector2d(0, 4), animals.get(1).getPosition());
+        Animal animal = (Animal) map.objectAt(new Vector2d(2, 4));
+        assertNotNull(animal);
+        assertEquals(MapDirection.NORTH, animal.getOrientation());
     }
 
     @Test
-    void shouldBlockBackwardMovementAtMapBoundary() {
+    void testMovementIsBlockedByAnotherAnimal() {
         // Given
-        List<Vector2d> initialPositions = List.of(new Vector2d(0, 0), new Vector2d(4, 1));
-        String[] moves = {"b", "b", "b", "b"};
+        WorldMap map = new RectangularMap(5, 5);
+        List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(2, 3));
+        List<MoveDirection> moves = OptionsParser.parse(new String[]{"f", "r"});
+        Simulation simulation = new Simulation(map, positions, moves);
 
         // When
-        List<Animal> animals = runSimulation(moves, initialPositions);
+        simulation.run();
 
         // Then
-        assertEquals(new Vector2d(0, 0), animals.get(0).getPosition());
-        assertEquals(new Vector2d(4, 0), animals.get(1).getPosition());
+        Animal animal1 = (Animal) map.objectAt(new Vector2d(2, 2));
+        Animal animal2 = (Animal) map.objectAt(new Vector2d(2, 3));
+
+        assertNotNull(animal1);
+        assertEquals(MapDirection.NORTH, animal1.getOrientation());
+
+        assertNotNull(animal2);
+        assertEquals(MapDirection.EAST, animal2.getOrientation());
     }
 
     @Test
-    void shouldHandleParsingOfInputArguments() {
+    void testPlacingAnimalOnOccupiedPositionFails() {
         // Given
-        String[] args = {"f", "invalid", "r", "l", "przod", "b"};
-        List<Vector2d> initialPositions = List.of(new Vector2d(2, 2));
+        WorldMap map = new RectangularMap(5, 5);
+        List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(2, 2));
+        List<MoveDirection> moves = OptionsParser.parse(new String[]{});
 
         // When
-        List<Animal> animals = runSimulation(args, initialPositions);
+
+        Simulation simulation = new Simulation(map, positions, moves);
 
         // Then
-        assertEquals(new Vector2d(2, 2), animals.get(0).getPosition());
-        assertEquals(MapDirection.NORTH, animals.get(0).getOrientation());
+        List<Animal> animalsInSim = simulation.getAnimals();
+        assertEquals(1, animalsInSim.size());
+
+        assertNotNull(map.objectAt(new Vector2d(2, 2)));
+        assertEquals(animalsInSim.get(0), map.objectAt(new Vector2d(2, 2)));
     }
 }
