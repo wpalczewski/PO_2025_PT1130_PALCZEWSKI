@@ -24,7 +24,9 @@ public class Simulation {
 
     public void run() {
         int numAnimals = animals.size();
-
+        if (numAnimals == 0) {
+            return;
+        }
         for (int i = 0; i < moves.size(); i++) {
 
             int animalIndex = i % numAnimals;
@@ -39,6 +41,6 @@ public class Simulation {
 
 
     public List<Animal> getAnimals() {
-        return animals;
+        return List.copyOf(animals);
     }
 }

@@ -53,7 +53,7 @@ class OptionsParserTest {
         List<MoveDirection> result = OptionsParser.parse(args);
 
         // Then
-        assertTrue(result.isEmpty(),);
+        assertTrue(result.isEmpty());
         assertEquals(0, result.size());
     }
 
