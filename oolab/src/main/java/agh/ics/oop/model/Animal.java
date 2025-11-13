@@ -5,9 +5,6 @@ public class Animal {
     private MapDirection orientation;
     private Vector2d position;
 
-    private static final Vector2d LOWER_LEFT_BOUND = new Vector2d(0, 0);
-    private static final Vector2d UPPER_RIGHT_BOUND = new Vector2d(4, 4);
-
     public Animal() {
         this.orientation = MapDirection.NORTH;
         this.position = new Vector2d(2, 2);
@@ -17,44 +14,54 @@ public class Animal {
         this.position = position;
         this.orientation = MapDirection.NORTH;
     }
+
     public Vector2d getPosition() {
         return this.position;
+    }
+
+    public void setPosition(Vector2d newPosition) {
+        this.position = newPosition;
     }
 
     public MapDirection getOrientation() {
         return this.orientation;
     }
 
+    public void setOrientation(MapDirection newOrientation) {
+        this.orientation = newOrientation;
+    }
+
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
     }
 
-    public void move(MoveDirection direction) {
+    public void move(MoveDirection direction, MoveValidator validator) {
         switch (direction) {
-            case RIGHT -> this.orientation = orientation.next();
-            case LEFT -> this.orientation = orientation.previous();
+            case RIGHT -> orientation = orientation.next();
+            case LEFT -> orientation = orientation.previous();
             case FORWARD, BACKWARD -> {
                 Vector2d moveVector = orientation.toUnitVector();
-
-                if (direction == MoveDirection.BACKWARD) {
+                if (direction == MoveDirection.BACKWARD)
                     moveVector = moveVector.opposite();
-                }
 
                 Vector2d newPosition = position.add(moveVector);
-
-                if (isWithinBounds(newPosition)) {
+                if (validator.canMoveTo(newPosition))
                     position = newPosition;
-                }
             }
         }
     }
+
     @Override
     public String toString() {
-        return position + " " + orientation;
+        return switch (orientation) {
+            case NORTH -> "^";
+            case EAST -> ">";
+            case SOUTH -> "v";
+            case WEST -> "<";
+        };
     }
 
-    private boolean isWithinBounds(Vector2d position) {
-        return position.follows(LOWER_LEFT_BOUND) && position.precedes(UPPER_RIGHT_BOUND);
-    }
 }
+
+
 
