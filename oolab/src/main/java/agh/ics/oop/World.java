@@ -14,7 +14,9 @@ public class World {
 
             List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
 
-            WorldMap map = new GrassField(10);
+            AbstractWorldMap map = new GrassField(10);
+
+            map.addObserver(new ConsoleMapDisplay());
 
             Simulation simulation = new Simulation(map, positions, directions);
 

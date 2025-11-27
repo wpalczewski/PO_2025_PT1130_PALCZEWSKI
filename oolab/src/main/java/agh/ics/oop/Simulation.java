@@ -33,19 +33,12 @@ public class Simulation {
         if (numAnimals == 0) {
             return;
         }
-
-        System.out.println("Stan poczatkowy:");
-        System.out.println(map);
-
         for (int i = 0; i < moves.size(); i++) {
             int animalIndex = i % numAnimals;
             Animal currentAnimal = animals.get(animalIndex);
             MoveDirection direction = moves.get(i);
 
             this.map.move(currentAnimal, direction);
-
-            System.out.println("Ruch: " + direction + ", Zwierzę " + (animalIndex + 1));
-            System.out.println(map);
         }
     }
 
