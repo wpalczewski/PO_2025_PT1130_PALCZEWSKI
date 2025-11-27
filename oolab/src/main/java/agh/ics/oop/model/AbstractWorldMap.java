@@ -9,14 +9,13 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected final MapVisualizer visualizer = new MapVisualizer(this);
 
     @Override
-    public boolean place(Animal animal) {
+    public void place(Animal animal) throws IncorrectPositionException {
         if (canMoveTo(animal.getPosition())) {
             animals.put(animal.getPosition(), animal);
-            return true;
+        } else {
+            throw new IncorrectPositionException(animal.getPosition());
         }
-        return false;
     }
-
     @Override
     public void move(Animal animal, MoveDirection direction) {
         if (!animals.containsValue(animal)) return;
