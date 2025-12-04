@@ -1,7 +1,7 @@
 package agh.ics.oop.model;
 
 
-public class Animal {
+public class Animal implements WorldElement{
     private MapDirection orientation;
     private Vector2d position;
 
@@ -50,17 +50,10 @@ public class Animal {
             }
         }
     }
-
     @Override
     public String toString() {
-        return switch (orientation) {
-            case NORTH -> "^";
-            case EAST -> ">";
-            case SOUTH -> "v";
-            case WEST -> "<";
-        };
+        return this.orientation.toSymbol();
     }
-
 }
 
 
