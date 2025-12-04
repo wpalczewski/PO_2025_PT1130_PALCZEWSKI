@@ -26,35 +26,14 @@ class OptionsParserTest {
     }
 
     @Test
-    void parseShouldIgnoreInvalidInput() {
+    void parseShouldThrowExceptionForInvalidInput() {
         // Given
         String[] args = {"f", "x", "l", "y", "r"};
 
-        // When
-        List<MoveDirection> result = OptionsParser.parse(args);
-
-        // Then
-        List<MoveDirection> expected = List.of(
-                MoveDirection.FORWARD,
-                MoveDirection.LEFT,
-                MoveDirection.RIGHT
-        );
-
-        assertEquals(3, result.size());
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void parseShouldReturnEmptyListForNoValidInput() {
-        // Given
-        String[] args = {"a", "bcd", "z"};
-
-        // When
-        List<MoveDirection> result = OptionsParser.parse(args);
-
-        // Then
-        assertTrue(result.isEmpty());
-        assertEquals(0, result.size());
+        // When & Then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            OptionsParser.parse(args);
+        });
     }
 
     @Test

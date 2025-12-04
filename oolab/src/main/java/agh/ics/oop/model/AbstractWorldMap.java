@@ -1,20 +1,23 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.util.MapVisualizer;
+
 import java.util.*;
 
 public abstract class AbstractWorldMap implements WorldMap {
 
     protected final Map<Vector2d, Animal> animals = new HashMap<>();
     protected final MapVisualizer visualizer = new MapVisualizer(this);
+    private final List<MapChangeListener> observers = new ArrayList<>();
 
     @Override
-    public boolean place(Animal animal) {
+    public void place(Animal animal) throws IncorrectPositionException {
         if (canMoveTo(animal.getPosition())) {
             animals.put(animal.getPosition(), animal);
-            return true;
+            mapChanged("Animal placed at " + animal.getPosition());
+        } else {
+            throw new IncorrectPositionException(animal.getPosition());
         }
-        return false;
     }
 
     @Override
@@ -28,6 +31,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         if (!oldPosition.equals(newPosition)) {
             animals.remove(oldPosition);
             animals.put(newPosition, animal);
+            mapChanged("Animal moved from " + oldPosition + " to " + newPosition);
         }
     }
 
@@ -53,4 +57,18 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
     public abstract Boundary getCurrentBounds();
+
+    public void addObserver(MapChangeListener observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(MapChangeListener observer) {
+        observers.remove(observer);
+    }
+
+    private void mapChanged(String message) {
+        for (MapChangeListener observer : observers) {
+            observer.mapChanged(this, message);
+        }
+    }
 }

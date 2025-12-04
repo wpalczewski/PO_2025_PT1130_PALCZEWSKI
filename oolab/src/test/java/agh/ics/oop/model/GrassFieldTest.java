@@ -50,7 +50,7 @@ class GrassFieldTest {
     }
 
     @Test
-    void shouldPrioritizeAnimalOverGrassInObjectAt() {
+    void shouldPrioritizeAnimalOverGrassInObjectAt() throws IncorrectPositionException {
         // Given
         GrassField map = new GrassField(1);
 
@@ -73,7 +73,7 @@ class GrassFieldTest {
     }
 
     @Test
-    void shouldCalculateDynamicBoundsCorrectly() {
+    void shouldCalculateDynamicBoundsCorrectly() throws IncorrectPositionException {
         // Given
         GrassField map = new GrassField(0);
 
@@ -86,5 +86,20 @@ class GrassFieldTest {
         // Then
         assertEquals(new Vector2d(-2, -2), bounds.lowerLeft());
         assertEquals(new Vector2d(5, 5), bounds.upperRight());
+    }
+    @Test
+    void shouldThrowExceptionWhenPlacingAnimalOnOccupiedPosition() throws IncorrectPositionException {
+        // Given
+        GrassField map = new GrassField(0);
+        Vector2d position = new Vector2d(2, 2);
+        Animal animal1 = new Animal(position);
+        Animal animal2 = new Animal(position);
+
+        map.place(animal1);
+
+        // When & Then
+        assertThrows(IncorrectPositionException.class, () -> {
+            map.place(animal2);
+        });
     }
 }
