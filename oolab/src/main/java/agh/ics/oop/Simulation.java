@@ -6,7 +6,7 @@ import agh.ics.oop.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Simulation {
+public class Simulation implements Runnable{
 
     private final List<Animal> animals;
     private final List<MoveDirection> moves;
@@ -37,7 +37,11 @@ public class Simulation {
             int animalIndex = i % numAnimals;
             Animal currentAnimal = animals.get(animalIndex);
             MoveDirection direction = moves.get(i);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
 
+            }
             this.map.move(currentAnimal, direction);
         }
     }
