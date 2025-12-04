@@ -7,7 +7,7 @@ import java.util.List;
 public class World {
 
     public static void main(String[] args) {
-        System.out.println("System wystartowal");
+        System.out.println("System Started");
 
         try {
             List<MoveDirection> directions = OptionsParser.parse(args);
@@ -24,7 +24,8 @@ public class World {
 
         } catch (IllegalArgumentException ex){
             System.out.println(ex.getMessage());
+            return;
         }
-        System.out.println("System zakonczył dzialanie");
+        System.out.println("System Ended");
     }
 }
