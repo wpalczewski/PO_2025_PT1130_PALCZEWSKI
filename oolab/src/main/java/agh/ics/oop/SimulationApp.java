@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+
+import agh.ics.oop.model.*;
 import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,12 +14,19 @@ public class SimulationApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
-
         loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
 
         BorderPane viewRoot = loader.load();
         SimulationPresenter presenter = loader.getController();
 
+        AbstractWorldMap map = new RectangularMap(5, 10);
+        presenter.setWorldMap(map);
+
+        try {
+            map.place(new Animal(new Vector2d(2, 2)));
+        } catch (IncorrectPositionException e) {
+            System.err.println(e.getMessage());
+        }
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
     }
