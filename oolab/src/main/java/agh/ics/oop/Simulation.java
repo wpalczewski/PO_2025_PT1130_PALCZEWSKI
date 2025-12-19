@@ -39,6 +39,12 @@ public class Simulation implements Runnable{
             MoveDirection direction = moves.get(i);
 
             this.map.move(currentAnimal, direction);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+                return;
+            }
         }
     }
 
