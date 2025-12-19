@@ -32,7 +32,6 @@ public class SimulationEngine {
     public void runAsyncInThreadPool() {
         for (Simulation simulation : simulations)
             threadPool.submit(simulation);
-        threadPool.shutdown();
     }
 
     public void awaitSimulationEnd() throws InterruptedException {
@@ -41,8 +40,10 @@ public class SimulationEngine {
         }
         threads.clear();
 
+        threadPool.shutdown();
+
         if (!threadPool.awaitTermination(10, TimeUnit.SECONDS))
-            threadPool.shutdownNow();
+            throw new RuntimeException("Exceeded 10 seconds");
     }
 
 }
